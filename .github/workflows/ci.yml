@@ -21,13 +21,10 @@ jobs:
       # TAMBAHKAN LANGKAH DEBUGGING INI                                       #
       # =================================================================== #
       - name: Debug GPG Key
-        env:
-          GPG_KEY: ${{ secrets.GPG_KEY }}
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
         run: |
           echo "--- 1. Attempting to import GPG Key ---"
           echo "Verifying secret by checking its SHA256 hash:"
-          echo -n "${{ env.GPG_PRIVATE_KEY }}" | sha256sum
+          echo -n "${{ secrets.GPG_PRIVATE_KEY }}" | sha256sum
           echo "--- GPG Debug Step Succeeded. If this works, the problem is very strange. ---"
       # =================================================================== #
   build_and_test:
