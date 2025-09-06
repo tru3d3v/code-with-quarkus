@@ -40,19 +40,7 @@ jobs:
     steps:
       - name: Checkout repository code
         uses: actions/checkout@v4
-
-      - name: Set up JDK 21 and Maven Central Authentication
-        uses: actions/setup-java@v4
-        with:
-          java-version: 21
-          distribution: 'temurin'
-          # ID server ini HARUS SAMA dengan <id> di pom.xml
-          server-id: central 
-          server-username: ${{ secrets.OSSRH_USERNAME }}
-          server-password: ${{ secrets.OSSRH_TOKEN }}
-          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
-          gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
-      # =================================================================== #
+       # =================================================================== #
       # TAMBAHKAN LANGKAH DEBUGGING INI                                       #
       # =================================================================== #
       - name: Debug GPG Key
@@ -69,6 +57,19 @@ jobs:
           
           echo "--- GPG Debug Step Succeeded. If this works, the problem is very strange. ---"
       # =================================================================== #
+
+      - name: Set up JDK 21 and Maven Central Authentication
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'temurin'
+          # ID server ini HARUS SAMA dengan <id> di pom.xml
+          server-id: central 
+          server-username: ${{ secrets.OSSRH_USERNAME }}
+          server-password: ${{ secrets.OSSRH_TOKEN }}
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
+     
 
 
       - name: Build, Sign, and Deploy to Sonatype Central
