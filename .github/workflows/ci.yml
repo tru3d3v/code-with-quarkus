@@ -21,8 +21,11 @@ jobs:
       # TAMBAHKAN LANGKAH DEBUGGING INI                                       #
       # =================================================================== #
       - name: Debug GPG Key
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
         run: |
           echo "--- 1. Attempting to import GPG Key ---"
+          echo "$GPG_PRIVATE_KEY"
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
           
           echo "--- 2. Listing available secret keys ---"
