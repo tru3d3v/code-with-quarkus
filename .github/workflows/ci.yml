@@ -38,9 +38,7 @@ jobs:
     if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.event_name == 'release')
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository code
-        uses: actions/checkout@v4
-       # =================================================================== #
+      # =================================================================== #
       # TAMBAHKAN LANGKAH DEBUGGING INI                                       #
       # =================================================================== #
       - name: Debug GPG Key
@@ -57,6 +55,9 @@ jobs:
           
           echo "--- GPG Debug Step Succeeded. If this works, the problem is very strange. ---"
       # =================================================================== #
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+      
 
       - name: Set up JDK 21 and Maven Central Authentication
         uses: actions/setup-java@v4
