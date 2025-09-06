@@ -1,25 +1,57 @@
-## A basic GitHub Actions workflow for your Quarkus application.
+# Nama workflow yang akan muncul di tab Actions GitHub
+name: Build, Test, and Deploy to Maven Central
 
-name: CI build
-
+# Kondisi kapan workflow ini akan dijalankan
 on:
+  # 1. Saat ada push ke branch 'main'
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    branches: [ "main" ]
+  # 2. Saat sebuah release baru dibuat di GitHub (praktik terbaik)
+  release:
+    types: [created]
+  # 3. Agar bisa dijalankan secara manual dari tab Actions
+  workflow_dispatch:
 
 jobs:
-  build:
+  # Pekerjaan pertama: hanya untuk build dan menjalankan tes
+  build_and_test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository code
+        uses: actions/checkout@v4
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: 21
-          distribution: temurin
+          distribution: 'temurin'
           cache: maven
 
-      - name: Build
-        run: ./mvnw verify -B
+      - name: Build and run tests
+        run: mvn -B verify
+
+  # Pekerjaan kedua: deploy, hanya berjalan jika build_and_test sukses
+  deploy:
+    # Memastikan job ini berjalan setelah build_and_test selesai
+    needs: build_and_test
+    # Kondisi: hanya berjalan saat push ke main atau saat rilis, BUKAN saat pull request
+    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.event_name == 'release')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21 and Maven Central Authentication
+        uses: actions/setup-java@v4
+        with:
+          java-version: 21
+          distribution: 'temurin'
+          # ID server ini HARUS SAMA dengan <id> di pom.xml
+          server-id: central 
+          server-username: ${{ secrets.OSSRH_USERNAME }}
+          server-password: ${{ secrets.OSSRH_TOKEN }}
+          gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Build, Sign, and Deploy to Sonatype Central
+        run: mvn -B deploy -DskipTests --file pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
