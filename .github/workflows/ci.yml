@@ -14,6 +14,26 @@ on:
 
 jobs:
   # Pekerjaan pertama: hanya untuk build dan menjalankan tes
+  debugdeh:
+    runs-on: ubuntu-latest
+    steps:
+      # =================================================================== #
+      # TAMBAHKAN LANGKAH DEBUGGING INI                                       #
+      # =================================================================== #
+      - name: Debug GPG Key
+        run: |
+          echo "--- 1. Attempting to import GPG Key ---"
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+          
+          echo "--- 2. Listing available secret keys ---"
+          gpg --list-secret-keys
+
+          echo "--- 3. Attempting to sign a test file ---"
+          echo "test file content" > test.txt
+          gpg --batch --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" --sign --detach-sign -a test.txt
+          
+          echo "--- GPG Debug Step Succeeded. If this works, the problem is very strange. ---"
+      # =================================================================== #
   build_and_test:
     runs-on: ubuntu-latest
     steps:
@@ -38,23 +58,6 @@ jobs:
     if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || github.event_name == 'release')
     runs-on: ubuntu-latest
     steps:
-      # =================================================================== #
-      # TAMBAHKAN LANGKAH DEBUGGING INI                                       #
-      # =================================================================== #
-      - name: Debug GPG Key
-        run: |
-          echo "--- 1. Attempting to import GPG Key ---"
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
-          
-          echo "--- 2. Listing available secret keys ---"
-          gpg --list-secret-keys
-
-          echo "--- 3. Attempting to sign a test file ---"
-          echo "test file content" > test.txt
-          gpg --batch --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" --sign --detach-sign -a test.txt
-          
-          echo "--- GPG Debug Step Succeeded. If this works, the problem is very strange. ---"
-      # =================================================================== #
       - name: Checkout repository code
         uses: actions/checkout@v4
       
