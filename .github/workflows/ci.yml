@@ -27,7 +27,7 @@ jobs:
         run: |
           echo "--- 1. Attempting to import GPG Key ---"
           echo "coba baca count: ${GPG_KEY}"
-          cho "Verifying secret by checking its SHA256 hash:"
+          echo "Verifying secret by checking its SHA256 hash:"
           echo -n "${{ secrets.GPG_PRIVATE_KEY }}" | sha256sum
 
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
