@@ -52,6 +52,24 @@ jobs:
           server-password: ${{ secrets.OSSRH_TOKEN }}
           gpg-private-key: ${{ secrets.GPG_PRIVATE_KEY }}
           gpg-passphrase: ${{ secrets.GPG_PASSPHRASE }}
+      # =================================================================== #
+      # TAMBAHKAN LANGKAH DEBUGGING INI                                       #
+      # =================================================================== #
+      - name: Debug GPG Key
+        run: |
+          echo "--- 1. Attempting to import GPG Key ---"
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+          
+          echo "--- 2. Listing available secret keys ---"
+          gpg --list-secret-keys
+
+          echo "--- 3. Attempting to sign a test file ---"
+          echo "test file content" > test.txt
+          gpg --batch --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" --sign --detach-sign -a test.txt
+          
+          echo "--- GPG Debug Step Succeeded. If this works, the problem is very strange. ---"
+      # =================================================================== #
+
 
       - name: Build, Sign, and Deploy to Sonatype Central
         run: mvn -B deploy -DskipTests --file pom.xml -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
