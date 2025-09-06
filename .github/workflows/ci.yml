@@ -26,19 +26,8 @@ jobs:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
         run: |
           echo "--- 1. Attempting to import GPG Key ---"
-          echo "coba baca count: ${GPG_KEY}"
           echo "Verifying secret by checking its SHA256 hash:"
           echo -n "${{ secrets.GPG_PRIVATE_KEY }}" | sha256sum
-
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
-          
-          echo "--- 2. Listing available secret keys ---"
-          gpg --list-secret-keys
-
-          echo "--- 3. Attempting to sign a test file ---"
-          echo "test file content" > test.txt
-          gpg --batch --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" --sign --detach-sign -a test.txt
-          
           echo "--- GPG Debug Step Succeeded. If this works, the problem is very strange. ---"
       # =================================================================== #
   build_and_test:
