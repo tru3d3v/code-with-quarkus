@@ -1,39 +1,32 @@
-name: Build and Deploy with GPG Signing
+name: Deploy SNAPSHOT to Sonatype
 
 on:
+  # Pemicu: Jalankan setiap kali ada push ke branch 'main'
   push:
     branches:
       - main
 
 jobs:
-  build-and-deploy:
+  publish-snapshot:
     runs-on: ubuntu-latest
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
+          # Konfigurasi server tetap sama
+          server-id: github 
+          server-username: ${{ secrets.OSSRH_USERNAME }}
+          server-password: ${{ secrets.OSSRH_TOKEN }}
+          # Kita tidak perlu GPG untuk snapshot
+          # jadi tidak perlu menambahkan gpg-private-key & gpg-passphrase di sini
 
-      # Langkah Kunci 1: Impor kunci GPG seperti sebelumnya
-      - name: Import GPG key
-        id: import_gpg
-        uses: crazy-max/ghaction-import-gpg@v6
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-
-      # Langkah Kunci 2: Jalankan Maven dengan argumen GPG
-      # Perhatikan penambahan -Dgpg.keyname dan -Dgpg.passphrase
-      - name: Build and Deploy with Maven
-        run: |
-          mvn -B deploy -P release \
-            -Dgpg.keyname=${{ steps.import_gpg.outputs.keyid }} \
-            -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
-        env:
-          # Jika Anda mendeploy ke Maven Central atau repositori laind
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+      - name: Publish SNAPSHOT to Sonatype
+        # Perintahnya lebih sederhana, tanpa '-P release'
+        # Pastikan versi di pom.xml berakhiran -SNAPSHOT
+        run: mvn --batch-mode deploy

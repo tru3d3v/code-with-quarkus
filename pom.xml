@@ -35,12 +35,16 @@
         <snapshotRepository>
             <id>github</id>
             <name>tru3d3v</name>
-            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
+         <!--  <url>https://central.sonatype.com/repository/maven-snapshots/</url> -->
+               <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+
         </snapshotRepository>
         <repository>
               <id>github</id>
             <name>tru3d3v</name>
-            <url>https://central.sonatype.com/service/local/staging/deploy/maven2/</url>
+          <!--  <url>https://central.sonatype.com/service/local/staging/deploy/maven2/</url> -->
+                <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+
         </repository>
     </distributionManagement>
 
@@ -156,7 +160,7 @@
                 <version>0.8.0</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <publishingServerId>central</publishingServerId>
+                    <publishingServerId>github</publishingServerId>
                     <autoPublish>true</autoPublish>
                 </configuration>
             </plugin>
