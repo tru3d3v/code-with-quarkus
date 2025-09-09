@@ -24,7 +24,7 @@ jobs:
           server-username: ${{ secrets.OSSRH_USERNAME }}
           server-password: ${{ secrets.OSSRH_PASSWORD }}
           # Kita tidak perlu GPG untuk snapshot
-          # jadi tidak perlu menambahkan gpg-private-key & gpg-passphrase di sini coba
+          # jadi tidak perlu menambahkan gpg-private-key & gpg-passphrase di sini cobax
 
       - name: Publish SNAPSHOT to Sonatype
         # Perintahnya lebih sederhana, tanpa '-P release'
