@@ -36,4 +36,4 @@ jobs:
         env:
           # Jika Anda mendeploy ke Maven Central atau repositori laind
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
