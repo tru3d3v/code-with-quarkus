@@ -34,6 +34,6 @@ jobs:
             -Dgpg.keyname=${{ steps.import_gpg.outputs.keyid }} \
             -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
         env:
-          # Jika Anda mendeploy ke Maven Central atau repositori lain
+          # Jika Anda mendeploy ke Maven Central atau repositori laind
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
           OSSRH_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
