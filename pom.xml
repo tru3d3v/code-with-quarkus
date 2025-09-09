@@ -154,11 +154,11 @@
             
              <plugin>
         <groupId>org.sonatype.central</groupId>
-        <artifactId>ossrh</artifactId>
+        <artifactId>central-publishing-maven-plugin</artifactId>
         <version>0.8.0</version>
         <extensions>true</extensions>
         <configuration>
-          <publishingServerId>io.github.tru3d3v</publishingServerId>
+          <publishingServerId>ossrh</publishingServerId>
         </configuration>
       </plugin>
 
