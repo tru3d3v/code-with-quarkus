@@ -1,22 +1,24 @@
-name: Publish to Maven Central
+name: Build and Deploy with GPG Signing
 
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - main
 
 jobs:
-  publish:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 21
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
 
+      # Langkah Kunci 1: Impor kunci GPG seperti sebelumnya
       - name: Import GPG key
         id: import_gpg
         uses: crazy-max/ghaction-import-gpg@v6
@@ -24,12 +26,14 @@ jobs:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
-      # INI BAGIAN YANG PALING PENTING UNTUK ERROR 401
-      - name: Publish package to Sonatype Central
+      # Langkah Kunci 2: Jalankan Maven dengan argumen GPG
+      # Perhatikan penambahan -Dgpg.keyname dan -Dgpg.passphrase
+      - name: Build and Deploy with Maven
         run: |
           mvn -B deploy -P release \
             -Dgpg.keyname=${{ steps.import_gpg.outputs.keyid }} \
             -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
         env:
+          # Jika Anda mendeploy ke Maven Central atau repositori lain
           OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_TOKEN }}
