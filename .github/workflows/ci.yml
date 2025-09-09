@@ -6,7 +6,7 @@ on:
   # Workflow ini akan berjalan setiap kali ada push ke branch 'develop'
   push:
     branches:
-      - master
+      - main
   # Memungkinkan workflow ini dijalankan secara manual dari tab Actions
   workflow_dispatch:
 
