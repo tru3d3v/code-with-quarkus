@@ -60,7 +60,7 @@ jobs:
         with:
           java-version: 21
           distribution: 'temurin'
-          # ID server ini HARUS SAMA dengan <id> di pom.xml
+          # ID server ini HARUS SAMA dengan <id> di pom.xml tes
           server-id: central 
           server-username: ${{ secrets.OSSRH_USERNAME }}
           server-password: ${{ secrets.OSSRH_TOKEN }}
