@@ -25,13 +25,6 @@ jobs:
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
-      - name: Check GPG version
-        run: gpg --version
-      - name: Debug Maven Build
-        run: |
-          mvn -B -X deploy -P release \
-            -Dgpg.keyname=${{ steps.import_gpg.outputs.keyid }} \
-            -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
 
       # Langkah Kunci 2: Jalankan Maven dengan argumen GPG
       # Perhatikan penambahan -Dgpg.keyname dan -Dgpg.passphrase
