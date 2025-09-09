@@ -20,7 +20,7 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
           # Konfigurasi server tetap sama
-          server-id: github 
+          server-id: ossrh 
           server-username: ${{ secrets.OSSRH_USERNAME }}
           server-password: ${{ secrets.OSSRH_PASSWORD }}
           # Kita tidak perlu GPG untuk snapshot
