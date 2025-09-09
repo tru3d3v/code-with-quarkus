@@ -1,39 +1,53 @@
-name: Build and Deploy with GPG Signing
+# Nama workflow yang akan tampil di tab "Actions" GitHub
+name: Deploy SNAPSHOT to GitHub Packages
 
+# Pemicu (trigger) workflow
 on:
+  # Workflow ini akan berjalan setiap kali ada push ke branch 'develop'
   push:
     branches:
-      - main
+      - develop
+  # Memungkinkan workflow ini dijalankan secara manual dari tab Actions
+  workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  # Nama job
+  deploy-snapshot:
+    # Menggunakan runner terbaru yang disediakan GitHub (biasanya Ubuntu)
     runs-on: ubuntu-latest
+    
+    # Izin yang diperlukan oleh job untuk menulis ke GitHub Packages
+    permissions:
+      contents: read
+      packages: write
+
     steps:
+      # Langkah 1: Checkout kode dari repositori
+      # Menggunakan action standar dari GitHub untuk mengunduh kode
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK
+      # Langkah 2: Setup JDK
+      # Menggunakan action untuk menginstal versi Java yang kita inginkan
+      # Action ini juga secara otomatis mengkonfigurasi file settings.xml untuk otentikasi ke GitHub Packages
+      - name: Set up JDK 11
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: '11'
           distribution: 'temurin'
+          # ID server ini HARUS SAMA PERSIS dengan <id> di pom.xml
+          server-id: github 
+          # GITHUB_TOKEN adalah secret yang disediakan otomatis oleh GitHub
+          # Tidak perlu Anda buat secara manual di repository secrets
+          server-username: GITHUB_ACTOR # Nama pengguna yang memicu workflow
+          server-password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Langkah Kunci 1: Impor kunci GPG seperti sebelumnya
-      - name: Import GPG key
-        id: import_gpg
-        uses: crazy-max/ghaction-import-gpg@v6
-        with:
-          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
-          passphrase: ${{ secrets.GPG_PASSPHRASE }}
-
-      # Langkah Kunci 2: Jalankan Maven dengan argumen GPG
-      # Perhatikan penambahan -Dgpg.keyname dan -Dgpg.passphrase
+      # Langkah 3: Build dan Deploy dengan Maven
+      # Menjalankan perintah Maven untuk melakukan deployment
       - name: Build and Deploy with Maven
-        run: |
-          mvn -B deploy -P release \
-            -Dgpg.keyname=${{ steps.import_gpg.outputs.keyid }} \
-            -Dgpg.passphrase=${{ secrets.GPG_PASSPHRASE }}
+        # Perintah 'deploy' akan meng-compile, menguji, mem-package, dan mengunggah artifact
+        # --batch-mode agar log lebih bersih dan tidak interaktif
+        # GITHUB_TOKEN digunakan untuk otentikasi
+        run: mvn --batch-mode deploy
         env:
-          # Jika Anda mendeploy ke Maven Central atau repositori laind
-          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
