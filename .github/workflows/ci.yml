@@ -14,19 +14,6 @@ on:
 
 jobs:
   # Pekerjaan pertama: hanya untuk build dan menjalankan tes
-  debugdeh:
-    runs-on: ubuntu-latest
-    steps:
-      # =================================================================== #
-      # TAMBAHKAN LANGKAH DEBUGGING INI                                       #
-      # =================================================================== #
-      - name: Debug GPG Key
-        run: |
-          echo "--- 1. Attempting to import GPG Key ---"
-          echo "Verifying secret by checking its SHA256 hash:"
-          echo -n "${{ secrets.GPG_PRIVATE_KEY }}" | sha256sum
-          echo "--- GPG Debug Step Succeeded. If this works, the problem is very strange. ---"
-      # =================================================================== #
   build_and_test:
     runs-on: ubuntu-latest
     steps:
