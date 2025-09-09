@@ -152,7 +152,16 @@
                 </executions>
             </plugin>
             
-            
+             <plugin>
+        <groupId>org.sonatype.central</groupId>
+        <artifactId>ossrh</artifactId>
+        <version>0.8.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <publishingServerId>io.github.tru3d3v</publishingServerId>
+        </configuration>
+      </plugin>
+
         </plugins>
     </build>
 
